@@ -1,0 +1,62 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+<title>{% block title %}Login{% endblock title %}</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href='{% static "bootstrap-5.0.2-dist\css\bootstrap.min.css" %}' rel="stylesheet" />
+
+<script src='{% static "bootstrap-5.0.2-dist\js\bootstrap.bundle.min.js" %}'></script>
+<script src='{% static "jquery-3.7.1.min.js" %}'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+<style>
+  body{
+    background-color:#f0f2f5;
+  }
+</style>   
+{% endblock head %}
+
+{% block 'body' %}
+{% comment %} <section class="vh-100 p-5" style="background-color: #6E7273;"> {% endcomment %}
+  <div class="container py-5 h-100" style="margin-top : 100px;">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card shadow-2-strong border" style="border-radius: 1rem;">
+          {% if messages %}
+            {% for message in messages %}
+             <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+          {% endif %}
+          <div class="card-body s-5 text-center">
+  
+              <h3 class="mb-5">Login</h3>
+              <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+              <div class="form-outline mb-2">
+                <input type="email" id="" name="email" class="form-control form-control-lg" placeholder="Email" required/>
+              </div>
+  
+              <div class="form-outline mb-2">
+                <input type="password" id="" name="password" class="form-control form-control-lg" placeholder="Password" required/>
+              </div>
+{% comment %} 
+              <div class="form-check d-flex justify-content-start mb-4">
+                <input class="form-check-input" type="checkbox" value="" id="form1Example3" />
+                <label class="form-check-label" for="form1Example3"> Remember password </label>
+              </div> {% endcomment %}
+  
+              <hr class="my-4">
+              <button class="btn text-white" type="submit" style="background-color:#e91e63;">Login</button>
+              <div class="mt-3">Don't have an account? <a href="{% url 'register' %}">Register</a></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% comment %} </section> {% endcomment %}
+{% endblock %}

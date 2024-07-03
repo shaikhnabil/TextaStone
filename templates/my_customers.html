@@ -1,0 +1,110 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block head %}
+<title>{% block title %}My Customers{% endblock title %}</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href='{% static "bootstrap-5.0.2-dist\css\bootstrap.min.css" %}' rel="stylesheet" />
+
+<script src='{% static "bootstrap-5.0.2-dist\js\bootstrap.bundle.min.js" %}'></script>
+<script src='{% static "jquery-3.7.1.min.js" %}'></script> 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+
+<!--data tables -->
+<script language="JavaScript" src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
+<script language="JavaScript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+<script language="JavaScript" src="https://cdn.datatables.net/2.0.0/js/dataTables.js" type="text/javascript"></script>
+<script language="JavaScript" src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.js" type="text/javascript"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
+
+<script>
+$(document).ready(function() {
+   new DataTable('#example');
+} );
+</script>
+<style>
+  body{
+    background-color:#f0f2f5;
+  }
+</style> 
+{% endblock head %}
+
+
+{% block 'body' %}
+{% if messages %}
+{% for message in messages %}
+ <div class="container alert alert-{{ message.tags }}" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="bg-light py-2 border-bottom">
+  <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
+    <ol class="mx-4 mt-1 breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'wholesaler_dashboard' %}">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Customers</li>
+    </ol>
+  </nav>
+</div>
+
+
+<!--Customers Request Page -->
+
+<a href="{% url 'customer_requests' %}" class="btn text-white float-end mx-5 mt-2" style="background-color:#e91e63;">
+  Customers Request
+</a>
+
+<div class="container my-2">
+  <h1 class="text-center">Customer Management</h1>
+  <table id="example" class="table table-hover table-bordered bg-white shadow-sm" style="width:100%">
+    <thead>
+      <tr class="bg-light">
+        <th>Customer Name</th>
+        <th>Customer Email</th>
+        <th>Phone no</th>
+        <th>Address</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for customer in users %} <!-- Assuming 'Customer' is passed from the view -->
+      <tr>
+        <td>{{ customer.username }}</td>
+        <td>{{ customer.email }}</td>
+        <td>{{ customer.phone_no }}</td>
+        <td>{{ customer.address }}</td>
+
+        {% comment %} <td >
+              <a type="button" href="{% url 'update_customer' customer.id %}" class="btn btn-warning">
+                Update
+              </a>
+        </td> {% endcomment %}
+        <td>
+            <a type="button" href="{% url 'delete_customer' customer.id %}" class="btn btn-danger">
+              Disconnect
+            </a>
+      </td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="bg-light">
+        <th>Customer Name</th>
+        <th>Customer Email</th>
+        <th>Phone no</th>
+        <th>Address</th>
+        <th>Action</th>
+      </tr>
+    </tfoot>
+  </table>
+    </div>
+
+{% endblock %}

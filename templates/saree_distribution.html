@@ -1,0 +1,184 @@
+{% extends 'index.html' %} {% load static %} {% block head %}
+<title>{% block title %}Distribute Saree{% endblock title %}</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link
+  href='{% static "bootstrap-5.0.2-dist\css\bootstrap.min.css" %}'
+  rel="stylesheet"
+/>
+
+<script src='{% static "bootstrap-5.0.2-dist\js\bootstrap.bundle.min.js" %}'></script>
+<script src='{% static "jquery-3.7.1.min.js" %}'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<style>
+  body {
+    background-color: #f0f2f5;
+  }
+</style>
+{% endblock head %} {% block 'body' %}
+<div class="bg-light py-2 border-bottom">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="mx-4 mt-1 breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'view_disributed_sarees' %}">Distribute Sarees</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Distribute Saree Form</li>
+    </ol>
+  </nav>        
+  </div>
+
+  {% if messages %}
+  {% for message in messages %}
+   <div class="alert alert-{{ message.tags }} container mt-2" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+<div class="container py-4 h-100 ">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+      <div class="card shadow-2-strong border" style="border-radius: 1rem">
+        <div class="card-body s-5 text-center">
+          <h3 class="mb-3">Saree Distribution</h3>
+
+          <form method="POST" action="{% url 'saree_distribution' %}">
+            {% csrf_token %}
+            <div class="form-outline mb-2">
+              <input
+                type="number"
+                id=""
+                class="form-control"
+                placeholder="Quantity"
+                name="quantity"
+                required
+              />
+            </div>
+
+            <div class="form-outline mb-2">
+              <input
+                id="received_date"
+                type="text"
+                class="form-control"
+                placeholder="Received date"
+                name="received_date"
+                onfocus="(this.type='date')"
+                required
+              />
+            </div>
+
+            <div class="form-outline mb-2">
+              <input
+                type="text"
+                id="return_date"
+                class="form-control"
+                placeholder="Return date"
+                name="return_date"
+                onfocus="(this.type='date')"
+              />
+            </div>
+
+            <div class="form-outline mb-2">
+              <input
+                type="text"
+                id="deadline_date"
+                class="form-control"
+                placeholder="Deadline date"
+                name="deadline_date"
+                onfocus="(this.type='date')"
+                required
+              />
+            </div>
+
+            <div class="form-outline mb-2">
+              <select id="who_provide" class="form-select" name="who_provide">
+                <option disabled>Who Provide</option>
+                <option selected disabled value="{{ user.id }}">
+                  {{ user.username }}
+                </option>
+                <!-- Add other wholesalers here -->
+              </select>
+            </div>
+
+            <div class="form-outline mb-2">
+             <select id="who_work" class="form-select" name="who_work">
+              <option selected disabled>Who Worked</option>
+              {% for customer in who_work_options %}
+                  <option value="{{ customer.id }}">{{ customer.username }}</option>
+              {% endfor %}
+          </select> 
+        </div>
+
+            {% comment %} <div class="form-outline mb-2">
+              <select id="who_work" class="form-select" name="who_work">
+                <option selected disabled>Who Worked</option>
+                <!-- Add options for customers here -->
+              </select>
+            </div> {% endcomment %}
+            <div class="form-outline mb-2">
+            <select id="saree" class="form-select" name="saree">
+              <option selected disabled>Sarees</option>
+              {% for saree_option in saree_options %}
+                  <option value="{{ saree_option.id }}">{{ saree_option.saree_name }}</option>
+              {% endfor %}
+           </select>
+          </div>
+
+          <div class="form-outline mb-2">
+            <input type="number" id="saree_price" class="form-control" placeholder="Saree Price" name="saree_price" readonly>
+        </div>
+
+        <div class="form-outline mb-2">
+          <input type="number" id="commission" class="form-control" placeholder="Saree Commission" name="commission">
+      </div>
+            <hr class="my-2" />
+
+            <button
+              class="btn text-white px-4"
+              type="submit"
+              style="background-color: #e91e63"
+            >
+              Add
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+  input[type="date"]:before {
+    content: attr(placeholder) !important;
+    color: #aaa;
+    margin-right: 0.5em;
+  }
+  input[type="date"]:focus:before,
+  input[type="date"]:valid:before {
+    content: "";
+  }
+</script>
+
+{% comment %} get saree price {% endcomment %}
+<script>
+  $(document).ready(function() {
+      $('#saree').change(function() {
+          var saree_id = $(this).val();  
+          $.ajax({
+              url: '{% url "get_saree_price" %}',  
+              method: 'GET',
+              data: {'saree_id': saree_id},  
+              success: function(response) {
+                  $('#saree_price').val(response.price);  
+              },
+              error: function(xhr, errmsg, err) {
+                  console.log(xhr.status + ": " + xhr.responseText);  
+                  $('#saree_price').val("" );
+              }
+          });
+      });
+  });
+  </script>
+  
+{% endblock %}

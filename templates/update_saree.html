@@ -1,0 +1,206 @@
+{% extends 'index.html' %} {% load static %} {% block head %}
+<title>{% block title %}Update Saree{% endblock title %}</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link
+  href='{% static "bootstrap-5.0.2-dist\css\bootstrap.min.css" %}'
+  rel="stylesheet"
+/>
+
+<script src='{% static "bootstrap-5.0.2-dist\js\bootstrap.bundle.min.js" %}'></script>
+<script src='{% static "jquery-3.7.1.min.js" %}'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<style>
+  body{
+    background-color:#f0f2f5;
+  }
+</style>
+{% endblock head %} 
+{% block 'body' %}
+
+<div class="bg-light py-2 border-bottom">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="mx-4 mt-1 breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'saree' %}">Saree</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Update Saree</li>
+    </ol>
+  </nav>        
+  </div>
+
+<div class="card mt-5 mx-5">
+    <div class="card-header">
+        <h4 class="text-center">Update Saree</h4>
+    </div>
+  <div class="card-body">
+    <form
+      method="post"
+      action="{% url 'update_saree' saree.id %}"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <input type="hidden" name="saree_id" value="{{ saree.id }}" />
+      <div class="form-group mt-2">
+        <label for="id_sample_image">Saree Name:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Saree Name"
+          id="id_sariname"
+          name="sariname"
+          value="{{ saree.saree_name }}"
+          required
+        />
+      </div>
+      <!-- Sample Image -->
+      <div class="form-group mt-2">
+        <label for="id_sample_image">Sample Image: <span class="text-muted">{{ saree.sample_image }}</span></label>
+        <input
+          type="file"
+          class="form-control"
+          id="id_sample_image"
+          name="sample_image"
+        />
+        
+      </div>
+
+<!-- Dynamic Material Fields -->
+ <button type="button" id="add-field-btn" class="btn text-white float-end  my-2" style="background-color:#e91e63;">+</button>
+
+ <input type="hidden" id="field-index" name="field_index">
+{% if materials %}
+{% for material_type, quantity in materials.items %} 
+ <div class="row mt-2" id="additional-fields">
+  <div class="form-group col-md-6">
+    <input type="text" class="form-control" placeholder="Material Type" id="field{{ forloop.counter }}_material_type" name="field{{ forloop.counter }}_material_type"  value="{{ material_type }}">
+  </div>
+  <div class="form-group col-md-5">
+    <input type="number" class="form-control" placeholder="Quantity (in grams)" id="field{{ forloop.counter }}_quantity" name="field{{ forloop.counter }}_quantity" value="{{ quantity }}" >
+ </div>
+</div>
+{% endfor %}
+{% else %} 
+ <div class="row mt-2" id="additional-fields">
+  {% comment %} <div class="form-group col-md-6">
+    <input type="text" class="form-control" placeholder="Material Type" id="field1_material_type" name="field1_material_type">
+  </div>
+  <div class="form-group col-md-5">
+    <input type="number" class="form-control" placeholder="Quantity (in grams)" id="field1_quantity" name="field1_quantity">
+  </div> {% endcomment %}
+</div>  
+{% endif %}
+<!-- Dynamic Material Fields - Existing Fields -->
+{% comment %} 
+{% for material_type, quantity in materials.items %}
+<div class="row mt-2" id="additional-fields">
+  <div class="form-group col-md-6">
+    <input type="text" class="form-control" placeholder="Material Type" id="field{{ forloop.counter }}_material_type" name="field{{ forloop.counter }}_material_type" value="{{ material_type }}">
+  </div>
+  <div class="form-group col-md-5">
+    <input type="number" class="form-control" placeholder="Quantity (in grams)" id="field{{ forloop.counter }}_quantity" name="field{{ forloop.counter }}_quantity" value="{{ quantity }}">
+  </div>
+</div>
+{% endfor %} {% endcomment %}
+
+
+<!-- Dynamic Material Fields - New Fields -->
+{% comment %} <div id="additional-fields-container"></div>
+<button type="button" id="add-field-btn" class="btn text-white float-end mb-1" style="background-color:#e91e63;">+</button> {% endcomment %}
+
+<!-- Hidden field to track the number of fields -->
+
+
+      <!-- Design No -->
+      <div class="form-group mt-2">
+        <label for="id_sample_image">Design No:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Design No"
+          id="id_design_no"
+          name="design_no"
+          value="{{ saree.design_no }}"
+          required
+        />
+      </div>
+      <hr />
+      <button type="submit" class="btn btn-primary float-end">Update Saree</button>
+    </form>
+    {% comment %}
+    <a href="{% url 'update_saree' saree.id %}" class="btn btn-warning"
+      >Update</a
+    >
+    {% endcomment %}
+  </div>
+</div>
+
+{% comment %} Script for generate dynamic Fields {% endcomment %}
+ <script>
+  $(document).ready(function() {
+   var fieldIndex = {{ materials|length }}+1; // Initial additional field index
+   $('#field-index').val(fieldIndex);
+  
+    // Function to add a new field row
+    function addFieldRow() {
+      var html = `
+      <div class="row mt-2" id="additional-fields">
+        <div class="form-group col-md-6">
+          <input type="text" class="form-control" placeholder="Material Type" id="field${fieldIndex}_material_type" name="field${fieldIndex}_material_type">
+        </div>
+        <div class="form-group col-md-5">
+          <input type="number" class="form-control" placeholder="Quantity (in grams)" id="field${fieldIndex}_quantity" name="field${fieldIndex}_quantity">
+        </div>
+       
+      </div>`;
+     // <input type="hidden" id="field-index" name="field_index" value=${fieldIndex}>
+      $('#additional-fields').append(html);
+      fieldIndex++;
+      $('#field-index').val(fieldIndex);
+    }
+
+    if(fieldIndex == 1)
+   {
+    addFieldRow();
+   }
+  
+    // Add field button click event
+    $('#add-field-btn').click(function() {
+      addFieldRow();
+    });
+  
+  });
+</script>
+
+{% comment %} <script>
+  $(document).ready(function() {
+    var fieldIndex = {{ materials|length }} + 1 ;
+  
+    // Function to add a new field row
+    function addFieldRow() {
+      var html = `
+      <div class="row mt-2" id="additional-fields">
+        <div class="form-group col-md-6">
+          <input type="text" class="form-control" placeholder="Material Type" id="field${fieldIndex}_material_type" name="field${fieldIndex}_material_type">
+        </div>
+        <div class="form-group col-md-5">
+          <input type="number" class="form-control" placeholder="Quantity (in grams)" id="field${fieldIndex}_quantity" name="field${fieldIndex}_quantity">
+        </div>
+        <input type="hidden" id="field-index" name="field_index" value="${fieldIndex}">
+      </div>`;
+      
+      $('#additional-fields-container').append(html);
+      fieldIndex++; // Increment index for the next field
+      $('#field-index').val(fieldIndex);  // Update the field_index value
+    }
+  
+    // Add field button click event
+    $('#add-field-btn').click(function() {
+      addFieldRow();
+    });
+
+  
+  });
+</script> {% endcomment %}
+
+{% endblock %}

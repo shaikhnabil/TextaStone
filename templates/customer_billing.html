@@ -1,0 +1,197 @@
+{% extends 'index.html' %} {% load static %} {% block head %}
+<title>{% block title %}Saree Billing{% endblock title %}</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link
+  href='{% static "bootstrap-5.0.2-dist\css\bootstrap.min.css" %}'
+  rel="stylesheet"
+/>
+
+<script src='{% static "bootstrap-5.0.2-dist\js\bootstrap.bundle.min.js" %}'></script>
+<script src='{% static "jquery-3.7.1.min.js" %}'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{% comment %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
+/>
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="http://cdn.datatables.net/plug-ins/3cfcc339e89/integration/bootstrap/3/dataTables.bootstrap.css"
+/>
+{% endcomment %}
+<!--data tables -->
+<script
+  language="JavaScript"
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  type="text/javascript"
+></script>
+<script
+  language="JavaScript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"
+  type="text/javascript"
+></script>
+<script
+  language="JavaScript"
+  src="https://cdn.datatables.net/2.0.0/js/dataTables.js"
+  type="text/javascript"
+></script>
+<script
+  language="JavaScript"
+  src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.js"
+  type="text/javascript"
+></script>
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdn.datatables.net/buttons/3.0.1/css/buttons.dataTables.css"
+  />
+<script
+  language="JavaScript"
+  src="https://cdn.datatables.net/buttons/3.0.1/js/dataTables.buttons.js"  type="text/javascript"
+></script>
+<script
+  language="JavaScript"
+  src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.dataTables.js"  type="text/javascript"
+></script>
+<script
+  language="JavaScript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"  type="text/javascript"
+></script>
+<script
+  language="JavaScript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"  type="text/javascript"
+></script>
+<script
+  language="JavaScript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"  type="text/javascript"
+></script>
+<script
+  language="JavaScript"
+  src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.html5.min.js"  type="text/javascript"
+></script>
+<script>
+  $(document).ready(function () {
+   // new DataTable("#example");
+   new DataTable('#example', {
+    layout: {
+        topStart: {
+            buttons: [
+                {
+                    extend: 'pdf',
+                    split: ['pdf', 'excel','csv']
+                }
+            ]
+        }
+    }
+  });
+  });
+</script>
+<style>
+  body {
+    background-color: #f0f2f5;
+  }
+</style>
+{% endblock head %} 
+
+{% block 'body' %}
+<div class="bg-light py-2 border-bottom">
+  <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
+    <ol class="mx-4 mt-1 breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'customer_dashboard' %}">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Billing</li>
+    </ol>
+  </nav>
+</div>
+
+{% if messages %} {% for message in messages %}
+<div class="alert alert-{{ message.tags }} container mt-2" role="alert">
+  {{ message }}
+  <button
+    type="button"
+    class="btn-close float-end"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+{% endfor %} {% endif %}
+
+<div class="container mt-2">
+  <div class="row mt-3">
+    <h2 class="text-center fw-bold">Billing</h2>
+  </div>
+
+  <div class="my-4 container">
+
+    <form id="monthForm" method="POST">
+      {% csrf_token %}
+      <label for="selected_month">Select Month:</label>
+      <select name="selected_month" id="selected_month">
+          {% for month_number, month_name in months %}
+              <option value="{{ month_number }}" {% if month_number == selected_month %} selected {% endif %}>{{ month_name }}</option>
+          {% endfor %}
+      </select>
+  </form>
+  
+  <!-- JavaScript to submit the form when the dropdown selection changes -->
+  <script>
+      document.getElementById('selected_month').addEventListener('change', function() {
+          document.getElementById('monthForm').submit();
+      });
+  </script>
+  
+
+    <table
+      id="example"
+      class="table table-hover table-bordered bg-white shadow-sm"
+      style="width: 100%"
+    >
+      <thead class="bg-light">
+        <th class="text-center">Wholesaler Name</th>
+        <th class="text-center">Received Date</th>
+        <th class="text-center">Saree name</th>
+        <th class="text-center">Quantity</th>
+        <th class="text-center">Price</th>
+        <th class="text-center">Total</th>
+      </thead>
+      <tbody>
+        {% for i in data %}
+        <tr>
+          <td class="text-center">{{ i.who_provide.username }}</td>
+          <td class="text-center">{{ i.received_date|date:"d-M-Y" }}</td>
+          <td class="text-center">{{ i.saree.saree_name }}</td>
+          <td class="text-center">{{ i.quantity }}</td>
+          <td class="text-center">{{ i.netprice }}</td>
+          <td class="text-center">{{ i.total }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot class="bg-light">
+        <th colspan="5" class="text-center">Total</th>
+        <th class="text-center">{{ totalp }}</th>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+
+

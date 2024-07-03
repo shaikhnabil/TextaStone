@@ -1,0 +1,91 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  {% block head %}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href='{% static "bootstrap-5.0.2-dist\css\bootstrap.min.css" %}'
+      rel="stylesheet"
+    />
+    <title>{% block title %}TextaStone{% endblock title %}</title>
+    <style>
+    
+        {% comment %} body { background-image : url('{% static "images\stone.jpg"  %}');
+      background-repeat:no-repeat;
+      background-attachment:fixed;
+      background-size: cover;
+      background-position: center;} {% endcomment %}
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+    <!-- Nucleo Icons -->
+    <link href='{% static "./css/nucleo-icons.css" %}' rel="stylesheet" />
+    <link href='{% static "./css/nucleo-svg.css" %}' rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- CSS Files -->
+    <link id="pagestyle" href='{% static "css/material-dashboard.css" %}' rel="stylesheet" />
+  </head>
+  {% endblock %}
+  <body>
+{% comment %} 
+    <header class="p-3 text-white fixed-top" style="background : #3d3c3a">
+        {% block 'header' %}
+            <div class="container">
+              <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                  <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+                </a>
+        
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                  <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+                  <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
+                  <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
+                  <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+                  <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+                </ul> {% endcomment %}
+{% comment %}         
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                  <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+                </form> {% endcomment %}
+        
+                {% comment %} <div class="text-end">
+                  <a href="{% url 'login' %}" type="button" class="btn btn-outline-success me-2 text-light">Login</a>
+                  <a href="{% url 'register' %}" type="button" class="btn btn-outline-danger text-light">Register</a>
+                </div>
+              </div>
+            </div>
+        {% endblock %}
+    </header> {% endcomment %}
+
+
+    {% block 'body' %}
+        
+    {% endblock %}
+
+    {% comment %} {% block 'footer' %}
+        <div class="container">
+          <span class="fixed-bottom p-2 text-center text-light" style="background : #3d3c3a">&copy 2024</span>
+        </div>
+    {% endblock %} {% endcomment %}
+
+
+
+    <script src='{% static "bootstrap-5.0.2-dist\js\bootstrap.bundle.min.js" %}'></script>
+    <script src='{% static "jquery-3.7.1.min.js" %}'></script>
+
+    <!--   Core JS Files   -->
+    {% comment %} <script src='{% static "popper.min.js"  %}'></script>
+    <script src='{% static "bootstrap.min.js"  %}'></script>
+    <script src='{% static "perfect-scrollbar.min.js"  %}'></script>
+    <script src='{% static "smooth-scrollbar.min.js"  %}'></script>
+    <script src='{% static "./chartjs.min.js"  %}'></script> {% endcomment %}
+
+
+  </body>
+</html>

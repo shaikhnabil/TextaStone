@@ -1,0 +1,170 @@
+{% extends 'index.html' %} {% load static %} {% block head %}
+<title>{% block title %}Update Saree{% endblock title %}</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link
+  href='{% static "bootstrap-5.0.2-dist\css\bootstrap.min.css" %}'
+  rel="stylesheet"
+/>
+
+<script src='{% static "bootstrap-5.0.2-dist\js\bootstrap.bundle.min.js" %}'></script>
+<script src='{% static "jquery-3.7.1.min.js" %}'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<style>
+  body{
+    background-color:#f0f2f5;
+  }
+</style>
+{% endblock head %} 
+{% block 'body' %}
+<div class="bg-light py-2 border-bottom">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="mx-4 mt-1 breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'view_disributed_sarees' %}">Distribute Sarees</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Update Distribute Sarees</li>
+    </ol>
+  </nav>        
+  </div>
+<div class="card my-4 mx-5">
+    <div class="card-header">
+        <h4 class="text-center card-title">Update Distribute Saree</h4>
+    </div>
+  <div class="card-body">
+    <form
+      method="post"
+      action="{% url 'update_distribute_saree' distribute_saree.id %}"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+    
+      <div class="form-group mt-2">
+        <label>Quantity</label>
+        <input
+        type="number"
+        class="form-control"
+        placeholder="Quantity"
+        name="quantity"
+        value="{{distribute_saree.quantity}}"
+        required
+      />
+      </div>
+     
+      <div class="form-group mt-2">
+        <label>Received date:</label>
+        <input
+        type="date"
+        class="form-control"
+        name="received_date"
+        value="{{ distribute_saree.received_date|date:'Y-m-d' }}"
+        required
+      />
+      </div>
+
+      <div class="form-group mt-2">
+        <label>Return date:</label>
+        <input
+        type="date"
+        class="form-control"
+        name="return_date"
+        value="{{ distribute_saree.return_date|date:'Y-m-d' }}"
+        
+      />
+      </div>
+     
+    
+      <div class="form-group mb-2">
+        <label>Deadline date:</label>
+        <input
+        type="date"
+        class="form-control"
+        name="deadline_date"
+        value="{{ distribute_saree.deadline_date|date:'Y-m-d' }}"
+        required
+      />
+      </div>
+
+      <div class="form-group mb-2">
+        <label>Who Provide:</label>
+        <select id="who_provide" class="form-select" name="who_provide">
+          <option selected value="{{ distribute_saree.who_provide.id }}">
+            {{ distribute_saree.who_provide.username }}
+          </option>
+          <!-- Add other wholesalers here -->
+        </select>
+      </div>
+
+      <div class="form-outline mb-2">
+        <label>Who Work:</label>
+        <select id="who_work" class="form-select" name="who_work">
+          
+          {% comment %} <option class="bg-primary text-white" selected value="{{ distribute_saree.who_work.id }}"> {{ distribute_saree.who_work.username }}</option> {% endcomment %}
+         {% for customer in who_work_options %}
+             {% if customer.id == distribute_saree.who_work.id %}
+              <option selected value="{{ customer.id }}">{{ customer.username  }}</option>
+             {% else %}
+             <option value="{{ customer.id }}">{{ customer.username  }}</option>
+             {% endif %}    
+         {% endfor %}
+     </select> 
+   </div>
+
+   <div class="form-outline mb-2">
+    <label>Sarees:</label>
+    <select id="saree" class="form-select" name="saree">
+      {% comment %} <option selected value="{{ distribute_saree.saree.id }}">{{ distribute_saree.saree.saree_name }}</option> {% endcomment %}
+      {% for saree_option in saree_options %}
+        {% if saree_option.id == distribute_saree.saree.id %}
+          <option selected value="{{ saree_option.id }}">{{ saree_option.saree_name }}</option>
+        {% else %}
+          <option value="{{ saree_option.id }}">{{ saree_option.saree_name }}</option>
+        {% endif %}  
+      {% endfor %}
+   </select>
+  </div>
+
+  
+  <div class="form-outline mb-2">
+    <label>Price</label>
+    <input type="number" id="saree_price" class="form-control" placeholder="Saree Price" value={{ price }} name="saree_price" readonly>
+</div>
+
+  <div class="form-group mt-2">
+    <label>Commission</label>
+    <input
+    type="number"
+    class="form-control"
+    placeholder="Saree Commission"
+    name="commission"
+    value="{{distribute_saree.commission}}"
+    required
+  />
+  </div>
+
+      <hr />
+      <button type="submit" class="btn btn-primary float-end">Update Saree</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+      $('#saree').change(function() {
+          var saree_id = $(this).val();  
+          $.ajax({
+              url: '{% url "get_saree_price" %}',  
+              method: 'GET',
+              data: {'saree_id': saree_id},  
+              success: function(response) {
+                  $('#saree_price').val(response.price);  
+              },
+              error: function(xhr, errmsg, err) {
+                  console.log(xhr.status + ": " + xhr.responseText);  
+                  $('#saree_price').val("" );
+              }
+          });
+      });
+  });
+  </script>
+{% endblock %}
